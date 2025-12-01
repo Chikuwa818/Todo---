@@ -38,10 +38,16 @@ $("#save").on("click", function(){
     // data-key と data-created を tr に持たせる
     const html = '<tr data-key="'+ key +'" data-created="'+ timestamp +'">'
                + '  <td>'+ value +'</td>'
-               + '  <td><button class="delete">削除</button></td>'
+               + '  <td><button class="delete">完了</button></td>'
                + '</tr>';
 
     $("#list").append(html);
+});
+
+$("#task").on("keypress", function(e){
+    if(e.key === "Enter"){
+        $("#save").click();   // Saveボタンと同じ動作を呼ぶ
+    }
 });
 
 // 2. Clear ボタン（全部削除）
@@ -55,18 +61,15 @@ for(let i = 0; i < localStorage.length; i++){
     const key   = localStorage.key(i);
     const value = localStorage.getItem(key);
 
-    // key から timestamp を復元（"task_1234567890" → 1234567890）
+    // keyの存在を確認して、"task_"と形式が一致した場合、timestampの取り出す（"task_1234567890" → 1234567890）
     let created = null;
     if (key && key.indexOf("task_") === 0) {
         created = Number(key.replace("task_", ""));
     }
-    if (!created) {
-        created = Date.now();  // 念のためのフォールバック
-    }
 
     const html = '<tr data-key="'+ key +'" data-created="'+ created +'">'
                + '  <td>'+ value +'</td>'
-               + '  <td><button class="delete">削除</button></td>'
+               + '  <td><button class="delete">完了</button></td>'
                + '</tr>';
 
     $("#list").append(html);
@@ -90,7 +93,7 @@ setInterval(function(){
 
     const baseSize = 14;     // 初期フォントサイズ
     const stepMs   = 1000;   // 1秒ごと
-    const addPx    = 3;      // 1ステップあたり +3px
+    const addPx    = 5;      // 1ステップあたり +5px
     const maxPx    = 200;    // 最大 200px
 
     // for 文で tr を1件ずつ処理
@@ -106,7 +109,7 @@ setInterval(function(){
 
             let size = baseSize;
 
-            // 4秒ごとに +3px
+            // 1秒ごとに +3px
             if (elapsed >= stepMs) {
                 const steps = Math.floor(elapsed / stepMs);
                 size = baseSize + steps * addPx;
