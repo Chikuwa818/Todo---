@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>suguyare</title>
+<script src="jquery-2.1.3.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="container">
+
+<header>
+  <h1>suguyare</h1>
+</header>
+
+<main>
+    <input type="text" id="task" placeholder="メモ内容を入力">
+    <ul>
+        <li id="save">Save</li>
+        <li id="clear">Clear</li>
+    </ul>
+</main>
+
+<table id="list"></table>
+
+</div>
+
+<script>
+// 1. Save クリックイベント
+$("#save").on("click", function(){
+    const timestamp = Date.now();              // 作成時刻（ミリ秒）
+    const key   = "task_" + timestamp;         // 裏側専用のユニークID
+    const value = $("#task").val();            // メモ内容
+
+    localStorage.setItem(key, value);
+
+    // data-key と data-created を tr に持たせる
+    const html = '<tr data-key="'+ key +'" data-created="'+ timestamp +'">'
+               + '  <td>'+ value +'</td>'
+               + '  <td><button class="delete">削除</button></td>'
+               + '</tr>';
+
+    $("#list").append(html);
+});
+
+// 2. Clear ボタン（全部削除）
+$("#clear").on("click", function(){
+    localStorage.clear();
+    $("#list").empty();
+});
+
+// 3. ページ読み込み：localStorage の内容を全部表示
+for(let i = 0; i < localStorage.length; i++){
+    const key   = localStorage.key(i);
+    const value = localStorage.getItem(key);
+
+    // key から timestamp を復元（"task_1234567890" → 1234567890）
+    let created = null;
+    if (key && key.indexOf("task_") === 0) {
+        created = Number(key.replace("task_", ""));
+    }
+    if (!created) {
+        created = Date.now();  // 念のためのフォールバック
+    }
+
+    const html = '<tr data-key="'+ key +'" data-created="'+ created +'">'
+               + '  <td>'+ value +'</td>'
+               + '  <td><button class="delete">削除</button></td>'
+               + '</tr>';
+
+    $("#list").append(html);
+}
+
+// 4. 削除ボタン（押された行だけ削除）
+$("#list").on("click", ".delete", function(){
+    const index = $(".delete").index(this);   // 何番目の削除ボタンか
+    const tr    = $("#list tr").eq(index);    // 対応する tr
+    const key   = tr.data("key");             // data-key を取得
+
+    localStorage.removeItem(key);             // localStorage から削除
+    tr.remove();                              // 画面から削除
+});
+
+// 5. 時間経過で文字サイズ＆色を変える処理
+setInterval(function(){
+
+    const now  = Date.now();
+    const rows = $("#list tr");
+
+    const baseSize = 14;     // 初期フォントサイズ
+    const stepMs   = 1000;   // 1秒ごと
+    const addPx    = 3;      // 1ステップあたり +3px
+    const maxPx    = 200;    // 最大 200px
+
+    // for 文で tr を1件ずつ処理
+    for (let i = 0; i < rows.length; i++) {
+
+        const tr  = rows[i];
+        const $tr = $(tr);
+        const created = Number($tr.data("created"));
+
+        if (created) {
+
+            const elapsed = now - created;  // 経過時間（ミリ秒）
+
+            let size = baseSize;
+
+            // 4秒ごとに +3px
+            if (elapsed >= stepMs) {
+                const steps = Math.floor(elapsed / stepMs);
+                size = baseSize + steps * addPx;
+            }
+
+            if (size > maxPx) {
+                size = maxPx;
+            }
+
+            // サイズに応じて色変更
+            let color = "#333";
+            if (size >= 100) {
+                color = "#ff0000";       // かなり古い
+            } else if (size >= 50) {
+                color = "#cc6600";       // そこそこ古い
+            }
+
+            // 1列目（タスク本文）のスタイル変更
+            $tr.find("td").first().css("font-size", size + "px");
+            $tr.find("td").first().css("color", color);
+        }
+    }
+
+}, 1000);   // 1秒ごとにチェック
+
+</script>
+
+</body>
+</html>
