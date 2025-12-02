@@ -1,4 +1,4 @@
-/* 全体を中央のカード風レイアウトに */
+/* 全体を中央よせ*/
 body{
     margin:0;
     padding:0;
@@ -6,10 +6,10 @@ body{
     background:#f3f4f6;
 }
 
-/* 中央の箱 */
+/* アプリケーション範囲を規定 */
 .container{
-    max-width: 600px;        /* コンパクト幅 */
-    margin: 30px auto;       /* 画面中央寄せ */
+    max-width: 600px;        
+    margin: 30px auto;  
     background:#fff;
     border:1px solid #ddd;
     border-radius:8px;
@@ -17,7 +17,7 @@ body{
     padding:20px;
 }
 
-/* ヘッダー */
+
 header{
     text-align: center;
     margin-bottom: 10px;
@@ -29,7 +29,7 @@ h1{
     margin:0;
 }
 
-/* メイン */
+
 main{
     width:100%;
     display:block;
@@ -46,7 +46,7 @@ main{
     box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 }
 
-/* Save / Clear ボタンの行 */
+/* SaveClearボタン */
 ul{
     padding: 0;
     margin: 10px 0 0;
@@ -70,7 +70,7 @@ li:hover{
     color:#fff;
 }
 
-/* テーブル表示 */
+/* メモされた内容のテーブル表示 */
 table{
     margin: 15px 0 0;
     border:1px solid #8dc3f5;
@@ -96,7 +96,7 @@ button.delete{
     cursor:pointer;
 }
 
-/* フッター */
+/* フッターは削除したからいらん
 footer{
     margin-top:15px;
     text-align: center;
