@@ -43,6 +43,7 @@
                 + '</tr>';
 
             $("#list").append(html);
+            $("#task").val("");
         });
 
         // エンターキーでもメモ内容が反映されるようにする
@@ -95,9 +96,9 @@
             const rows = $("#list tr");
 
             const baseSize = 14;     // 初期フォントサイズ
-            const stepMs = 1000;   // 1秒ごと
+            const stepMs = 1000;   // 1ステップを1秒で定義
             const addPx = 5;      // 1ステップあたり +5px
-            const maxPx = 200;    // 最大 200px
+            const maxPx = 300;    // 最大 300px
 
             // for 文で tr を1件ずつ処理
             for (let i = 0; i < rows.length; i++) {
@@ -136,7 +137,7 @@
                 }
             }
 
-        }, 1000);   // 1秒ごとにページを更新してサイズ変更の結果を反映
+        }, 1000);   // 処理を1秒に1回行う
 
     </script>
 
